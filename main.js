@@ -63,7 +63,7 @@ const createWindow = () => {
       // buttonLabel: 'select',
       defaultPath: 'C:\\Users\\BetterChinglish\\OneDrive\\桌面\\拼多多入职信息',
       // title: '选个文档吧亲',
-      // in windows or linux, filter是文件类型选择器，properties是文件选择器，二者不能同时使用
+      // in windows and linux, filter是文件类型选择器，properties是文件选择器，二者不能同时使用
       filters: [
         { name: 'Images', extensions: ['jpg', 'png', 'gif'] },
         { name: 'Movies', extensions: ['mkv', 'avi', 'mp4'] },
