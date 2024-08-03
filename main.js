@@ -60,16 +60,22 @@ const createWindow = () => {
     
     dialog.showOpenDialog({
       // 确认按钮的文字
-      buttonLabel: 'select',
-      defaultPath: app.getPath('desktop'),
-      title: '选个文档吧亲',
-      // filters: [
-      //   { name: 'pic', extensions: ['jpg'] }, 
-      // ],
+      // buttonLabel: 'select',
+      defaultPath: 'C:\\Users\\BetterChinglish\\OneDrive\\桌面\\拼多多入职信息',
+      // title: '选个文档吧亲',
+      // in windows or linux, filter是文件类型选择器，properties是文件选择器，二者不能同时使用
+      filters: [
+        { name: 'Images', extensions: ['jpg', 'png', 'gif'] },
+        { name: 'Movies', extensions: ['mkv', 'avi', 'mp4'] },
+        { name: 'Custom File Type', extensions: ['as'] },
+        { name: 'All Files', extensions: ['*'] }
+      ],
       // properties: ['multiSelections', 'createDirectory', 'openFile', 'openDirectory', 'showHiddenFiles'],
       // 打开路径
     }).then(result => {
       console.log(result)
+    }).catch(err => {
+      console.log(err)
     })
   })
   
