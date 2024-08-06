@@ -3,16 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; img-src *"
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; script-src 'self'; img-src *"
     />
     <title>Hello from Electron renderer!</title>
-    
+  
   </head>
   <body>
     <button id="send-message">send</button>
     <p id="send-message-result">hello world</p>
     <img src="https://www.electronjs.org/zh/assets/img/logo.svg" alt="">
+    
+    <br>
+    
+    <button id="send-message2">show clipboard msg</button>
   </body>
   <script src="./renderer.js"></script>
 </html>
