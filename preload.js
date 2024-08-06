@@ -1,7 +1,7 @@
 console.log('this is preload js')
 
 
-const { contextBridge, ipcRenderer } = require('electron')
+const { contextBridge, ipcRenderer, clipboard } = require('electron')
 
 
 
@@ -11,7 +11,13 @@ const handleSend = async () => {
   return execResult
 }
 
+const showClipboardMsg = () => {
+  return clipboard.readText();
+}
+
+
 contextBridge.exposeInMainWorld('myAPI',{
   halo: 'hello world',
-  handleSend
+  handleSend,
+  showClipboardMsg
 })

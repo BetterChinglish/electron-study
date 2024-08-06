@@ -1,5 +1,6 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron/main')
+const { app, BrowserWindow, ipcMain, dialog, globalShortcut, Menu } = require('electron/main')
 const { resolve } = require('path')
+const createTray = require("./tray");
 const WinState = require('electron-win-state').default;
 
 const winState = new WinState({
@@ -7,6 +8,35 @@ const winState = new WinState({
   defaultHeight: 1200
 })
 
+const mainMenuConfig = [
+  {
+    label: 'label1',
+    submenu: [
+      {
+        label: 'submenu1',
+        click: () => {
+          console.log('submenu1')
+        }
+      },
+      {
+        label: 'submenu2',
+        click: () => {
+          console.log('submenu2')
+        }
+      }
+    ]
+  },
+  {
+    label: 'edit',
+    submenu: [
+      {
+        role: 'copy'  // role的话是使用系统自带的功能
+      }
+    ]
+  }
+]
+
+const mainMenu = Menu.buildFromTemplate(mainMenuConfig);
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -58,39 +88,67 @@ const createWindow = () => {
     // selectionText：鼠标左键选中的文本
     // wc.executeJavaScript(`alert('${params.selectionText}')`)
     
-    dialog.showOpenDialog({
-      // 确认按钮的文字
-      // buttonLabel: 'select',
-      defaultPath: 'C:\\Users\\BetterChinglish\\OneDrive\\桌面\\拼多多入职信息',
-      // title: '选个文档吧亲',
-      // in windows and linux, filter是文件类型选择器，properties是文件选择器，二者不能同时使用
-      filters: [
-        { name: 'Images', extensions: ['jpg', 'png', 'gif'] },
-        { name: 'Movies', extensions: ['mkv', 'avi', 'mp4'] },
-        { name: 'Custom File Type', extensions: ['as'] },
-        { name: 'All Files', extensions: ['*'] }
-      ],
-      // properties: ['multiSelections', 'createDirectory', 'openFile', 'openDirectory', 'showHiddenFiles'],
-      // 打开路径
-    }).then(result => {
-      console.log(result)
-    }).catch(err => {
-      console.log(err)
-    })
+    
+    // 弹出文件选择框
+    // dialog.showOpenDialog({
+    //   // 确认按钮的文字
+    //   buttonLabel: 'select',
+    //   defaultPath: app.getPath('desktop'),
+    //   title: '选个文档吧亲',
+    //   filters: [
+    //     { name: 'pic', extensions: ['jpg', 'png'] }, 
+    //   ],
+    //   // properties: ['multiSelections', 'createDirectory', 'openFile', 'openDirectory', 'showHiddenFiles'],
+    //   // 打开路径
+    //   path: app.getPath('desktop'),
+    // }).then(result => {
+    //   console.log(result)
+    // })
+    
+    // 弹出保存文件选择框
+    // dialog.showSaveDialog({}).then(result => {
+    //   console.log(result)
+    // })
+    
+    // 弹出原生消息框
+    // const answer = ["Yes", "No", "Maybe"];
+    // dialog.showMessageBox({
+    //   title: 'message box',
+    //   message: 'hello world',
+    //   detail: 'this is detail',
+    //   buttons: answer,
+    //  
+    // }).then(result => {
+    //   console.log(result);
+    // })
+    
+    // 右键菜单
+    mainMenu.popup();
+    
   })
   
+  // 窗口最上方的菜单区域设置
+  Menu.setApplicationMenu(mainMenu);
   
   // 加载页面
   win.loadFile('index.html');
   
+  createTray(app, win);
+  
   winState.manage(win);
+  
+  // globalShortcut.register('a', () => {
+  //   console.log('clicked a');
+  //   globalShortcut.unregister('a');
+  // })
+  
   
 }
 
 // 当app准备好后
 app.whenReady().then(() => {
   createWindow()
-
+  
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow()
@@ -110,7 +168,7 @@ ipcMain.handle('send-message', (event, message) => {
 
 // 应用失焦与聚焦
 app.on('browser-window-blur', () => {
-    console.log('browser-window-blur')
+  console.log('browser-window-blur')
 })
 app.on('browser-window-focus', () => {
   console.log('browser-window-focus')
