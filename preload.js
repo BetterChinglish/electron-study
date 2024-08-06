@@ -12,7 +12,11 @@ const handleSend = async () => {
 }
 
 const showClipboardMsg = () => {
+  // 读第一条
   return clipboard.readText();
+  
+  // 往里面写：
+  // clipboard.writeText('hello clipboard');
 }
 
 
