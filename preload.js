@@ -1,7 +1,13 @@
 console.log('this is preload js')
 
 
-const { contextBridge, ipcRenderer, clipboard } = require('electron')
+const {
+  contextBridge,
+  ipcRenderer,
+  clipboard,
+  desktopCapturer,
+  nativeImage
+} = require('electron')
 
 
 
@@ -19,9 +25,24 @@ const showClipboardMsg = () => {
   // clipboard.writeText('hello clipboard');
 }
 
+const capture = async () => {
+  const result = await ipcRenderer.invoke('capture-event');
+  // console.log(result);
+  return result.find((item, index) => index === 0);
+};
+
+const testNativeImg = () => {
+  const img = nativeImage.createFromPath('test.png');
+  console.log(img)
+  return img;
+}
+
+
 
 contextBridge.exposeInMainWorld('myAPI',{
   halo: 'hello world',
   handleSend,
-  showClipboardMsg
+  showClipboardMsg,
+  capture,
+  testNativeImg
 })

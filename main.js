@@ -1,4 +1,13 @@
-const { app, BrowserWindow, ipcMain, dialog, globalShortcut, Menu } = require('electron/main')
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  dialog,
+  globalShortcut,
+  Menu,
+  desktopCapturer,
+  session
+} = require('electron/main')
 const { resolve } = require('path')
 const createTray = require("./tray");
 const WinState = require('electron-win-state').default;
@@ -149,6 +158,13 @@ const createWindow = () => {
 app.whenReady().then(() => {
   createWindow()
   
+  session.defaultSession.setDisplayMediaRequestHandler((request, callback) => {
+    desktopCapturer.getSources({ types: ['screen'] }).then((sources) => {
+      // Grant access to the first screen found.
+      callback({ video: sources[0], audio: 'loopback' })
+    })
+  })
+  
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow()
@@ -165,6 +181,17 @@ ipcMain.handle('send-message', (event, message) => {
   console.log(message)
   return 'message received'
 })
+
+ipcMain.handle('capture-event', async (e, args) => {
+  return desktopCapturer.getSources({
+    types: ['window', 'screen'],
+    thumbnailSize: {
+      width: 1920,
+      height: 1080
+    }
+  })
+})
+
 
 // 应用失焦与聚焦
 app.on('browser-window-blur', () => {
